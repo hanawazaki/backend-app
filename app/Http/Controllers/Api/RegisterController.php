@@ -12,9 +12,9 @@ class RegisterController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request)
+    public function register(Request $request)
     {
-         //set validation
+        //set validation
         $validator = Validator::make($request->all(), [
             'name'      => 'required',
             'email'     => 'required|email|unique:users',
@@ -34,10 +34,10 @@ class RegisterController extends Controller
         ]);
 
         //return response JSON user is created
-        if($user) {
+        if ($user) {
             return response()->json([
                 'success' => true,
-                'user'    => $user,  
+                'user'    => $user,
             ], 201);
         }
 
@@ -45,7 +45,5 @@ class RegisterController extends Controller
         return response()->json([
             'success' => false,
         ], 409);
-
-
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\RegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,31 +20,18 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-/**
- * route "/register"
- * @method "POST"
- */
-Route::post('/register', App\Http\Controllers\Api\RegisterController::class)->name('register');
+Route::post('/register', [RegisterController::class, 'register'])->name('register');
 
-/**
- * route "/login"
- * @method "POST"
- */
-Route::post('/login', App\Http\Controllers\Api\LoginController::class)->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login');
 
-/**
- * route "/user"
- * @method "GET"
- */
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::apiResource('/posts', App\Http\Controllers\Api\PostController::class);
 });
-
-/**
- * route "/logout"
- * @method "POST"
- */
-Route::post('/logout', App\Http\Controllers\Api\LogoutController::class)->name('logout');
-
-
-Route::apiResource('/posts', App\Http\Controllers\Api\PostController::class);
